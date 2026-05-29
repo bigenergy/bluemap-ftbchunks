@@ -1,5 +1,6 @@
 package com.piglinmine.blueftbchunks.ftbchunks;
 
+import com.piglinmine.blueftbchunks.config.ModConfig;
 import com.mojang.logging.LogUtils;
 import dev.ftb.mods.ftbchunks.api.ClaimedChunk;
 import dev.ftb.mods.ftbchunks.api.event.ClaimedChunkEvent;
@@ -38,7 +39,7 @@ public class ClaimEventHandler {
     public void register() {
         ClaimedChunkEvent.AFTER_CLAIM.register(this::handleChunkClaimed);
         ClaimedChunkEvent.AFTER_UNCLAIM.register(this::handleChunkUnclaimed);
-        LOGGER.info("Registered FTB Chunks event handlers");
+        if (ModConfig.enableLogs) LOGGER.info("Registered FTB Chunks event handlers");
     }
 
     private void handleChunkClaimed(CommandSourceStack source, ClaimedChunk chunk) {

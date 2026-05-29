@@ -55,7 +55,7 @@ public final class FTBChunksIntegration {
      */
     public static void init(MinecraftServer minecraftServer) {
         if (!ModConfig.ftbChunksEnabled) {
-            LOGGER.info("FTB Chunks integration is disabled in config");
+            if (ModConfig.enableLogs) LOGGER.info("FTB Chunks integration is disabled in config");
             return;
         }
 
@@ -90,7 +90,7 @@ public final class FTBChunksIntegration {
                 TimeUnit.MILLISECONDS
         );
 
-        LOGGER.info("FTB Chunks integration started (startup delay: {}ms, update interval: {}ms)",
+        if (ModConfig.enableLogs) LOGGER.info("FTB Chunks integration started (startup delay: {}ms, update interval: {}ms)",
                 initialDelayMs, intervalMs);
     }
 
@@ -108,7 +108,7 @@ public final class FTBChunksIntegration {
         clearAllCaches();
 
         server = null;
-        LOGGER.info("FTB Chunks integration stopped");
+        if (ModConfig.enableLogs) LOGGER.info("FTB Chunks integration stopped");
     }
 
     /**

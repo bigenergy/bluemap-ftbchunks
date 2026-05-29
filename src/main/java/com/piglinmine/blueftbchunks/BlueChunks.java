@@ -53,7 +53,7 @@ public class BlueChunks {
 
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-        LOGGER.info("Starting BlueChunks...");
+        if (ModConfig.enableLogs) LOGGER.info("Starting BlueChunks...");
 
         ChunkDataManager.getInstance().initialize(event.getServer());
 
@@ -62,13 +62,13 @@ public class BlueChunks {
         if (ModConfig.ftbChunksEnabled) {
             claimEventHandler.register();
         } else {
-            LOGGER.info("FTB Chunks integration is disabled in config");
+            if (ModConfig.enableLogs) LOGGER.info("FTB Chunks integration is disabled in config");
         }
     }
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
-        LOGGER.info("Stopping BlueChunks...");
+        if (ModConfig.enableLogs) LOGGER.info("Stopping BlueChunks...");
 
         ChunkDataManager.getInstance().shutdown();
 

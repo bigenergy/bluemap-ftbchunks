@@ -36,11 +36,20 @@ public final class ModConfig {
             )
             .defineInRange("startupDelayMs", 3000, 1000, 60000);
 
+    private static final ForgeConfigSpec.BooleanValue ENABLE_LOGS = BUILDER
+            .comment(
+                    "Enable verbose INFO logging from this mod.",
+                    "Errors and warnings are always logged regardless of this setting.",
+                    "Default: false"
+            )
+            .define("enableLogs", false);
+
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
     public static boolean ftbChunksEnabled = true;
     public static int claimUpdateIntervalMs = 60000;
     public static int startupDelayMs = 3000;
+    public static boolean enableLogs = false;
 
     private ModConfig() {
         throw new AssertionError("Configuration class cannot be instantiated");
@@ -55,5 +64,6 @@ public final class ModConfig {
         ftbChunksEnabled = FTB_CHUNKS_ENABLED.get();
         claimUpdateIntervalMs = CLAIM_UPDATE_INTERVAL_MS.get();
         startupDelayMs = STARTUP_DELAY_MS.get();
+        enableLogs = ENABLE_LOGS.get();
     }
 }

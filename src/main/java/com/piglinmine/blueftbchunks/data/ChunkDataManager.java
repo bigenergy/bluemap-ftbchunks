@@ -2,6 +2,7 @@ package com.piglinmine.blueftbchunks.data;
 
 import com.piglinmine.blueftbchunks.BlueChunks;
 import com.piglinmine.blueftbchunks.bluemap.BlueMapMarkerService;
+import com.piglinmine.blueftbchunks.config.ModConfig;
 import com.piglinmine.blueftbchunks.ftbchunks.ClaimRenderer;
 import com.piglinmine.blueftbchunks.ftbchunks.FTBChunksClaimProvider;
 import com.piglinmine.blueftbchunks.ftbchunks.FTBChunksIntegration;
@@ -86,13 +87,13 @@ public final class ChunkDataManager {
         }
 
         this.server = minecraftServer;
-        LOGGER.info("Initializing ChunkDataManager...");
+        if (ModConfig.enableLogs) LOGGER.info("Initializing ChunkDataManager...");
 
         loadFromFile();
         synchronizeWithFTBChunks();
         startAutoSave();
 
-        LOGGER.info("ChunkDataManager initialized with {} chunks from {} teams",
+        if (ModConfig.enableLogs) LOGGER.info("ChunkDataManager initialized with {} chunks from {} teams",
                 claimData.getTotalChunkCount(), claimData.getTotalTeamCount());
     }
 
@@ -104,7 +105,7 @@ public final class ChunkDataManager {
             return;
         }
 
-        LOGGER.info("Shutting down ChunkDataManager...");
+        if (ModConfig.enableLogs) LOGGER.info("Shutting down ChunkDataManager...");
 
         stopAutoSave();
 
@@ -117,7 +118,7 @@ public final class ChunkDataManager {
         dirty.set(false);
 
         server = null;
-        LOGGER.info("ChunkDataManager shutdown complete");
+        if (ModConfig.enableLogs) LOGGER.info("ChunkDataManager shutdown complete");
     }
 
     /**
@@ -163,7 +164,7 @@ public final class ChunkDataManager {
                 // Wait a bit for FTB Chunks to fully initialize
                 Thread.sleep(3000);
 
-                LOGGER.info("Triggering initial BlueMap marker creation...");
+                if (ModConfig.enableLogs) LOGGER.info("Triggering initial BlueMap marker creation...");
 
                 // Execute on the server thread to ensure thread safety
                 server.execute(() -> {
@@ -182,7 +183,7 @@ public final class ChunkDataManager {
                                 ClaimRenderer.updateDimensionClaims(level.dimension());
                             }
                         }
-                        LOGGER.info("Initial BlueMap marker creation complete: {} total chunks rendered", totalChunks);
+                        if (ModConfig.enableLogs) LOGGER.info("Initial BlueMap marker creation complete: {} total chunks rendered", totalChunks);
                     } catch (Exception e) {
                         LOGGER.error("Error during initial BlueMap render", e);
                     }
@@ -232,7 +233,7 @@ public final class ChunkDataManager {
         Path dataFile = getDataFilePath();
 
         if (!Files.exists(dataFile)) {
-            LOGGER.info("No existing data file found, starting fresh");
+            if (ModConfig.enableLogs) LOGGER.info("No existing data file found, starting fresh");
             claimData = new ChunkClaimData();
             return;
         }
@@ -243,7 +244,7 @@ public final class ChunkDataManager {
 
             if (loaded != null) {
                 claimData = loaded;
-                LOGGER.info("Loaded {} chunks from {} teams from data file (saved: {})",
+                if (ModConfig.enableLogs) LOGGER.info("Loaded {} chunks from {} teams from data file (saved: {})",
                         claimData.getTotalChunkCount(),
                         claimData.getTotalTeamCount(),
                         new Date(claimData.getLastSaved()));
@@ -279,7 +280,7 @@ public final class ChunkDataManager {
                     StandardOpenOption.TRUNCATE_EXISTING);
 
             dirty.set(false);
-            LOGGER.info("Saved {} chunks from {} teams to data file",
+            if (ModConfig.enableLogs) LOGGER.info("Saved {} chunks from {} teams to data file",
                     claimData.getTotalChunkCount(), claimData.getTotalTeamCount());
             return true;
 
@@ -301,7 +302,7 @@ public final class ChunkDataManager {
             return;
         }
 
-        LOGGER.info("Starting synchronization with FTB Chunks API...");
+        if (ModConfig.enableLogs) LOGGER.info("Starting synchronization with FTB Chunks API...");
 
         FTBChunksClaimProvider provider = FTBChunksClaimProvider.getInstance();
         int changes = 0;
@@ -383,9 +384,9 @@ public final class ChunkDataManager {
 
         if (changes > 0) {
             markDirty();
-            LOGGER.info("Synchronization complete: {} changes detected", changes);
+            if (ModConfig.enableLogs) LOGGER.info("Synchronization complete: {} changes detected", changes);
         } else {
-            LOGGER.info("Synchronization complete: no changes");
+            if (ModConfig.enableLogs) LOGGER.info("Synchronization complete: no changes");
         }
 
     }
@@ -394,14 +395,14 @@ public final class ChunkDataManager {
      * Forces a complete re-initialization: clears data, reloads from file, and re-syncs.
      */
     public void forceReinitialize() {
-        LOGGER.info("Forcing complete re-initialization...");
+        if (ModConfig.enableLogs) LOGGER.info("Forcing complete re-initialization...");
 
         claimData.clear();
         loadFromFile();
         synchronizeWithFTBChunks();
         saveToFile();
 
-        LOGGER.info("Re-initialization complete");
+        if (ModConfig.enableLogs) LOGGER.info("Re-initialization complete");
     }
 
     /**
@@ -411,7 +412,7 @@ public final class ChunkDataManager {
      * @param server the Minecraft server instance
      */
     public void fullFlushAndReload(MinecraftServer server) {
-        LOGGER.info("Performing full memory flush and reload...");
+        if (ModConfig.enableLogs) LOGGER.info("Performing full memory flush and reload...");
 
         // Clear all data manager state
         claimData.clear();
@@ -441,7 +442,7 @@ public final class ChunkDataManager {
         // Trigger BlueMap marker recreation
         triggerFullMapRender(server);
 
-        LOGGER.info("Full flush and reload complete");
+        if (ModConfig.enableLogs) LOGGER.info("Full flush and reload complete");
     }
 
     /**
@@ -468,7 +469,7 @@ public final class ChunkDataManager {
             return;
         }
 
-        LOGGER.info("Triggering full BlueMap marker recreation...");
+        if (ModConfig.enableLogs) LOGGER.info("Triggering full BlueMap marker recreation...");
 
         int totalChunks = 0;
         for (ServerLevel level : server.getAllLevels()) {
@@ -482,20 +483,20 @@ public final class ChunkDataManager {
             }
         }
 
-        LOGGER.info("Full map render complete: {} total chunks", totalChunks);
+        if (ModConfig.enableLogs) LOGGER.info("Full map render complete: {} total chunks", totalChunks);
     }
 
     /**
      * Reloads data from file and synchronizes with FTB Chunks.
      */
     public void reloadAndSync() {
-        LOGGER.info("Reloading data and synchronizing...");
+        if (ModConfig.enableLogs) LOGGER.info("Reloading data and synchronizing...");
 
         loadFromFile();
         synchronizeWithFTBChunks();
         saveToFile();
 
-        LOGGER.info("Reload complete");
+        if (ModConfig.enableLogs) LOGGER.info("Reload complete");
     }
 
     // ==================== Auto-Save ====================

@@ -1,5 +1,6 @@
 package com.piglinmine.blueftbchunks.bluemap;
 
+import com.piglinmine.blueftbchunks.config.ModConfig;
 import com.piglinmine.blueftbchunks.data.ChunkDataManager;
 import com.piglinmine.blueftbchunks.ftbchunks.FTBChunksIntegration;
 import com.mojang.logging.LogUtils;
@@ -77,14 +78,14 @@ public final class BlueMapManager {
             return;
         }
 
-        LOGGER.info("Initializing {} BlueMap plugin(s)", plugins.size());
+        if (ModConfig.enableLogs) LOGGER.info("Initializing {} BlueMap plugin(s)", plugins.size());
         InitializationResult result = initializeAllPlugins(server);
-        LOGGER.info("BlueMap initialization complete ({} successful, {} failed)",
+        if (ModConfig.enableLogs) LOGGER.info("BlueMap initialization complete ({} successful, {} failed)",
                 result.successful, result.failed);
 
         // Register callback for when BlueMap API becomes available
         onEnableCallback = api -> {
-            LOGGER.info("BlueMap API is now available, triggering initial marker creation...");
+            if (ModConfig.enableLogs) LOGGER.info("BlueMap API is now available, triggering initial marker creation...");
             blueMapReady.set(true);
 
             // Trigger initial marker creation for all stored claims
@@ -96,7 +97,7 @@ public final class BlueMapManager {
         BlueMapAPI.onEnable(onEnableCallback);
 
         onDisableCallback = api -> {
-            LOGGER.info("BlueMap API is shutting down");
+            if (ModConfig.enableLogs) LOGGER.info("BlueMap API is shutting down");
             blueMapReady.set(false);
         };
         BlueMapAPI.onDisable(onDisableCallback);
@@ -104,7 +105,7 @@ public final class BlueMapManager {
         // Check if BlueMap is already available (in case it loaded before us)
         BlueMapAPI.getInstance().ifPresent(api -> {
             if (blueMapReady.compareAndSet(false, true)) {
-                LOGGER.info("BlueMap API already available, triggering initial marker creation...");
+                if (ModConfig.enableLogs) LOGGER.info("BlueMap API already available, triggering initial marker creation...");
                 ChunkDataManager dataManager = ChunkDataManager.getInstance();
                 if (dataManager.isInitialized()) {
                     dataManager.triggerInitialMapRender();
@@ -125,7 +126,7 @@ public final class BlueMapManager {
             return;
         }
 
-        LOGGER.info("Shutting down BlueMap plugins");
+        if (ModConfig.enableLogs) LOGGER.info("Shutting down BlueMap plugins");
 
         // Unregister BlueMap callbacks to prevent memory leaks
         if (onEnableCallback != null) {
@@ -140,7 +141,7 @@ public final class BlueMapManager {
         shutdownAllPlugins();
         initialized.set(false);
         blueMapReady.set(false);
-        LOGGER.info("BlueMap shutdown complete");
+        if (ModConfig.enableLogs) LOGGER.info("BlueMap shutdown complete");
     }
 
     /**
