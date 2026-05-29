@@ -4,7 +4,7 @@ import com.flowpowered.math.vector.Vector2i;
 import dev.ftb.mods.ftblibrary.math.ChunkDimPos;
 import dev.ftb.mods.ftbteams.api.Team;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.common.UsernameCache;
+import net.minecraftforge.common.UsernameCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

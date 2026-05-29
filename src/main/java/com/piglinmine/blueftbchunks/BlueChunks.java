@@ -8,14 +8,13 @@ import com.piglinmine.blueftbchunks.ftbchunks.ClaimCache;
 import com.piglinmine.blueftbchunks.ftbchunks.ClaimEventHandler;
 import com.piglinmine.blueftbchunks.ftbchunks.PlayerClaimTracker;
 import com.mojang.logging.LogUtils;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
 /**
@@ -35,38 +34,23 @@ public class BlueChunks {
     private final ClaimCache claimCache;
     private final ClaimEventHandler claimEventHandler;
 
-    /**
-     * Constructs the mod instance and registers event listeners.
-     *
-     * @param modEventBus  the mod's event bus
-     * @param modContainer the mod container
-     */
-    public BlueChunks(IEventBus modEventBus, ModContainer modContainer) {
+    public BlueChunks() {
         this.claimCache = new ClaimCache();
         this.claimEventHandler = new ClaimEventHandler(claimCache);
 
-        NeoForge.EVENT_BUS.register(this);
-        NeoForge.EVENT_BUS.register(PlayerClaimTracker.class);
+        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(PlayerClaimTracker.class);
 
-        modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, ModConfig.SPEC);
+        ModLoadingContext.get().registerConfig(
+                net.minecraftforge.fml.config.ModConfig.Type.COMMON, ModConfig.SPEC);
     }
 
-    /**
-     * Registers mod commands.
-     *
-     * @param event the command registration event
-     */
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
         ModCommands.register(event.getDispatcher());
         LOGGER.debug("Registered mod commands");
     }
 
-    /**
-     * Handles server startup by initializing the BlueMap integration and registering event handlers.
-     *
-     * @param event the server starting event
-     */
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         LOGGER.info("Starting BlueChunks...");
@@ -82,11 +66,6 @@ public class BlueChunks {
         }
     }
 
-    /**
-     * Handles server shutdown by cleaning up resources.
-     *
-     * @param event the server stopping event
-     */
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
         LOGGER.info("Stopping BlueChunks...");
