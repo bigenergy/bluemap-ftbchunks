@@ -21,7 +21,7 @@ base {
     archivesName = "bluemap-ftbchunks"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 minecraft {
     mappings channel: mapping_channel, version: mapping_version
