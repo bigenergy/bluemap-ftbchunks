@@ -11,13 +11,8 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
-    maven { url 'https://repo.bluecolored.de/releases/' } // BlueMap
-    exclusiveContent {
-        forRepository {
-            maven { url "https://cursemaven.com" }
-        }
-        filter { includeGroup "curse.maven" }
-    }
+    maven { url = 'https://repo.bluecolored.de/releases/' } // BlueMap
+    maven { url = "https://www.cursemaven.com" }
     maven { url = "https://mvn.devos.one/snapshots" } // Registrate
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
 }
