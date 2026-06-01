@@ -2,6 +2,7 @@ package com.piglinmine.blueftbchunks.ftbchunks;
 
 import com.piglinmine.blueftbchunks.api.ChunkClaimProvider;
 import com.piglinmine.blueftbchunks.bluemap.BlueMapMarkerService;
+import com.piglinmine.blueftbchunks.config.ModConfig;
 import com.piglinmine.blueftbchunks.ftbchunks.region.ClaimRegion;
 import com.piglinmine.blueftbchunks.ftbchunks.region.RegionGrouper;
 import com.piglinmine.blueftbchunks.util.ShapeBuilder;
@@ -67,7 +68,7 @@ public final class ClaimRenderer {
         Map<UUID, List<ClaimedChunk>> allClaims = claimProvider.getClaimedChunksByTeam(dimension);
 
         int totalChunks = allClaims.values().stream().mapToInt(List::size).sum();
-        LOGGER.info("updateDimensionClaims for {}: found {} teams with {} total chunks",
+        if (ModConfig.enableLogs) LOGGER.info("updateDimensionClaims for {}: found {} teams with {} total chunks",
                 dimensionId, allClaims.size(), totalChunks);
 
         if (allClaims.isEmpty()) {
@@ -390,7 +391,7 @@ public final class ClaimRenderer {
 
             Optional<dev.ftb.mods.ftbteams.api.Team> team = claimProvider.getTeamById(teamId);
             if (team.isEmpty()) {
-                LOGGER.info("Team {} no longer exists, removing markers", teamId);
+                if (ModConfig.enableLogs) LOGGER.info("Team {} no longer exists, removing markers", teamId);
                 removeAllTeamMarkers(dimension, teamId);
                 cachedTeamColors.remove(teamId);
             }

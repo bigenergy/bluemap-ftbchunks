@@ -49,6 +49,14 @@ public final class ModConfig {
             )
             .defineInRange("startupDelayMs", 3000, 1000, 60000);
 
+    private static final ModConfigSpec.BooleanValue ENABLE_LOGS = BUILDER
+            .comment(
+                    "Enable verbose INFO logging from this mod.",
+                    "Errors and warnings are always logged regardless of this setting.",
+                    "Default: false"
+            )
+            .define("enableLogs", false);
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     /** Whether FTB Chunks integration is enabled. */
@@ -59,6 +67,9 @@ public final class ModConfig {
 
     /** Delay before first claim update after server start in milliseconds. */
     public static int startupDelayMs = 3000;
+
+    /** Whether verbose INFO logging is enabled. */
+    public static boolean enableLogs = false;
 
     private ModConfig() {
         throw new AssertionError("Configuration class cannot be instantiated");
@@ -73,5 +84,6 @@ public final class ModConfig {
         ftbChunksEnabled = FTB_CHUNKS_ENABLED.get();
         claimUpdateIntervalMs = CLAIM_UPDATE_INTERVAL_MS.get();
         startupDelayMs = STARTUP_DELAY_MS.get();
+        enableLogs = ENABLE_LOGS.get();
     }
 }
